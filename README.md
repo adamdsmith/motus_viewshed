@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![Launch Rstudio Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamdsmith/motus_viewshed/master?urlpath=rstudio)
+[![Launch RStudio Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamdsmith/motus_viewshed/master?urlpath=rstudio)
 <!-- badges: end -->
 
 This is a test…
