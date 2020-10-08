@@ -5,6 +5,11 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   if (!requireNamespace("raster", quietly = TRUE)) install.packages("raster", quiet = TRUE)
   if (!requireNamespace("mapview", quietly = TRUE)) install.packages("mapview", quiet = TRUE)
 
+  # Set up mapview display options
+  mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap")
+  mapview::mapviewOptions(basemaps = mt, na.color = "#FFFFFF00")
+  
+  # Calculate range rings
   lon <- coords[2]; lat <- coords[1]
   coords <- cbind(lon, lat)
   prj <- sprintf("+proj=laea +x_0=0 +y_0=0 +lon_0=%f +lat_0=%f", lon, lat)
@@ -24,30 +29,43 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
 
   # Calculate viewshed
   pt_elev <- raster::extract(elev, pt) + ht
-  out <- elev - pt_elev
-  out[out < 0] <- NA
   
-  # Set up display
-  mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap")
-  mapview::mapviewOptions(basemaps = mt, na.color = "#FFFFFF00")
-  suppressWarnings(
-    m <- mapview::mapview(out, layer.name = "Elev. deficit (m)") +
-      mapview::mapview(pt, layer.name = "Proposed station", 
-                       alpha.regions = 0, cex = 4, color = "orange",
-                       legend = FALSE, label = NULL) +
-      mapview::mapview(poly15, layer.name = "15 km range", 
-                       alpha.regions = 0, color = "white",
-                       legend = FALSE, label = NULL) +
-      mapview::mapview(poly10, layer.name = "10 km range", 
-                       alpha.regions = 0, color = "white",
-                       legend = FALSE, label = NULL) +
-      mapview::mapview(poly5, layer.name = "5 km range", 
-                       alpha.regions = 0, color = "white",
-                       legend = FALSE, label = NULL)
-  )
+  if (all(pt_elev > max(raster::values(elev), na.rm = TRUE))) {
+    message("No elevation deficits found in viewshed. Displaying only 5, 10, and 15 km range rings.")
+    suppressWarnings(
+      m <- mapview::mapview(pt, layer.name = "Proposed station", 
+                            alpha.regions = 0, cex = 4, color = "orange",
+                            legend = FALSE, label = NULL) +
+        mapview::mapview(poly15, layer.name = "15 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly10, layer.name = "10 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly5, layer.name = "5 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL))
+  } else {
+    out <- elev - pt_elev
+    out[out < 0] <- NA
+    suppressWarnings(
+      m <- mapview::mapview(out, layer.name = "Elev. deficit (m)") +
+        mapview::mapview(pt, layer.name = "Proposed station", 
+                         alpha.regions = 0, cex = 4, color = "orange",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly15, layer.name = "15 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly10, layer.name = "10 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly5, layer.name = "5 km range", 
+                         alpha.regions = 0, color = "white",
+                         legend = FALSE, label = NULL))
+  }
+
   m <- leaflet::setView(m@map, sp::coordinates(pt_ll)[1], 
-                    sp::coordinates(pt_ll)[2],
-                    zoom = 11)
+                        sp::coordinates(pt_ll)[2],
+                        zoom = 11)
   return(m)
 }
-  
