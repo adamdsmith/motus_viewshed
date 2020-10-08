@@ -8,4 +8,4 @@ install.packages(c(
   "sf",
   "sp",
   "units"
-), dependencies = c("Depends", "Imports", "Suggests"))
+))
