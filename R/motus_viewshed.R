@@ -6,7 +6,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   if (!requireNamespace("mapview", quietly = TRUE)) install.packages("mapview", quiet = TRUE)
 
   # Set up mapview display options
-  mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap")
+  mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap", "OpenStreetMap")
   mapview::mapviewOptions(basemaps = mt, na.color = "#FFFFFF00")
   
   # Calculate range rings
@@ -16,6 +16,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   
   pt_ll <- sp::SpatialPoints(coords, sp::CRS("+init=epsg:4326"))
   pt <- sp::spTransform(pt_ll, sp::CRS(prj))
+  poly20 <- rgeos::gBuffer(pt, width = 20000, quadsegs = 12)
   poly15 <- rgeos::gBuffer(pt, width = 15000, quadsegs = 12)
   poly10 <- rgeos::gBuffer(pt, width = 10000, quadsegs = 12)
   poly5 <- rgeos::gBuffer(pt, width = 5000, quadsegs = 12)
@@ -23,7 +24,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   # Get DEM
   suppressWarnings(
     suppressMessages(
-      elev <- elevatr::get_elev_raster(poly15, z = zoom, clip = "locations", verbose = FALSE)
+      elev <- elevatr::get_elev_raster(poly20, z = zoom, clip = "locations", verbose = FALSE)
     )
   )
 
@@ -52,6 +53,9 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
       m <- mapview::mapview(out, layer.name = "Elev. deficit (m)") +
         mapview::mapview(pt, layer.name = "Proposed station", 
                          alpha.regions = 0, cex = 4, color = "orange",
+                         legend = FALSE, label = NULL) +
+        mapview::mapview(poly20, layer.name = "20 km range", 
+                         alpha.regions = 0, color = "white",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly15, layer.name = "15 km range", 
                          alpha.regions = 0, color = "white",
