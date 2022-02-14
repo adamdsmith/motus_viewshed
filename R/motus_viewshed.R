@@ -40,13 +40,13 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
                             alpha.regions = 0, cex = 4, color = "orange",
                             legend = FALSE, label = NULL) +
         mapview::mapview(poly15, layer.name = "15 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly10, layer.name = "10 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly5, layer.name = "5 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL))
   } else {
     out <- elev - pt_elev
@@ -60,16 +60,16 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
                         alpha.regions = 0, color = "gray50",
                         legend = FALSE, label = NULL) +
         mapview::mapview(poly20, layer.name = "20 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly15, layer.name = "15 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly10, layer.name = "10 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL) +
         mapview::mapview(poly5, layer.name = "5 km range", 
-                         alpha.regions = 0, color = "white",
+                         alpha.regions = 0, color = "gray50",
                          legend = FALSE, label = NULL))
   }
 
