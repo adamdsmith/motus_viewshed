@@ -1,4 +1,5 @@
 install.packages(c(
+  "codetools",
   "elevatr",
   "leaflet",
   "mapview",
