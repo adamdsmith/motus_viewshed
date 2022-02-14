@@ -20,7 +20,9 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   poly15 <- rgeos::gBuffer(pt, width = 15000, quadsegs = 12)
   poly10 <- rgeos::gBuffer(pt, width = 10000, quadsegs = 12)
   poly5 <- rgeos::gBuffer(pt, width = 5000, quadsegs = 12)
-
+  divisions <- st_wedges(0, 0, 20000, 8)
+  divisions <- sf::st_sf(sf::st_set_crs(divisions, prj))
+  
   # Get DEM
   suppressWarnings(
     suppressMessages(
@@ -54,6 +56,9 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
         mapview::mapview(pt, layer.name = "Proposed station", 
                          alpha.regions = 0, cex = 4, color = "orange",
                          legend = FALSE, label = NULL) +
+        mapview::mapview(divisions, layer.name = "Direction guide",
+                        alpha.regions = 0, color = "gray50",
+                        legend = FALSE, label = NULL) +
         mapview::mapview(poly20, layer.name = "20 km range", 
                          alpha.regions = 0, color = "white",
                          legend = FALSE, label = NULL) +
@@ -72,4 +77,21 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
                         sp::coordinates(pt_ll)[2],
                         zoom = 11)
   return(m)
+}
+
+st_wedge <- function(x,y,r,start,width,n=50){
+  theta = seq(start, start+width, length=n)
+  xarc = x + r*sin(theta)
+  yarc = y + r*cos(theta)
+  xc = c(x, xarc, x)
+  yc = c(y, yarc, y)
+  sf::st_polygon(list(cbind(xc,yc)))   
+}
+
+st_wedges <- function(x, y, r, nsegs){
+  width = (2*pi)/nsegs
+  starts = seq(-0.5, by = 1, length.out = nsegs + 1)*width
+  polys = lapply(starts, function(s){st_wedge(x,y,r,s,width)})
+  mpoly = sf::st_cast(do.call(sf::st_sfc, polys), "MULTIPOLYGON")
+  mpoly
 }
