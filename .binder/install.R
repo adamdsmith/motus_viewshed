@@ -3,6 +3,7 @@ install.packages(c(
   "elevatr",
   "leaflet",
   "mapview",
+  "progress",
   "raster",
   "rgdal",
   "rgeos",
