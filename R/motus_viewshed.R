@@ -91,3 +91,8 @@ st_wedges <- function(x, y, r, nsegs){
   mpoly = sf::st_cast(do.call(sf::st_sfc, polys), "MULTIPOLYGON")
   mpoly
 }
+
+# Abbreviated version
+mv <- function(lat, lon, h = 1, z = 10) {
+  motus_viewshed(c(lat, lon), ht = h, zoom = z)
+}

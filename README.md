@@ -32,3 +32,10 @@ motus_viewshed(coords = c(35.196986, -82.873250), ht = 6)
 ```
 
 <img src="viewshed_static.png" width="1202" />
+
+
+If you're doing many of these, there's an abbreviated version `mv()` that's easier to type and copy-paste coordinates into. Here's the same viewshed using the abbreviated version:
+
+``` r
+mv(35.196986, -82.873250, 6)
+```
