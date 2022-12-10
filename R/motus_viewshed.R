@@ -2,7 +2,8 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   if (!requireNamespace("elevatr", quietly = TRUE)) install.packages("elevatr", quiet = TRUE)
   if (!requireNamespace("raster", quietly = TRUE)) install.packages("raster", quiet = TRUE)
   if (!requireNamespace("mapview", quietly = TRUE)) install.packages("mapview", quiet = TRUE)
-
+  if (!requireNamespace("rgdal", quietly = TRUE)) install.packages("rgdal", quiet = TRUE)
+  
   # Set up mapview display options
   mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap", "OpenStreetMap")
   mapview::mapviewOptions(basemaps = mt, na.color = "#FFFFFF00")
