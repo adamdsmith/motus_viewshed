@@ -9,5 +9,6 @@ install.packages(c(
   "rgeos",
   "sf",
   "sp",
+  "tidygeocoder",
   "units"
 ))
