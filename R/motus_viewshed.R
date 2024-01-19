@@ -2,7 +2,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   if (!requireNamespace("elevatr", quietly = TRUE)) install.packages("elevatr", quiet = TRUE)
   if (!requireNamespace("raster", quietly = TRUE)) install.packages("raster", quiet = TRUE)
   if (!requireNamespace("mapview", quietly = TRUE)) install.packages("mapview", quiet = TRUE)
-  if (!requireNamespace("rgdal", quietly = TRUE)) install.packages("rgdal", quiet = TRUE)
+  if (!requireNamespace("sf", quietly = TRUE)) install.packages("sf", quiet = TRUE)
   if (!requireNamespace("tidygeocoder", quietly = TRUE)) install.packages("tidygeocoder", quiet = TRUE)
   
   # Set up mapview display options
@@ -25,7 +25,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   
   # Get DEM
   suppressMessages(
-      elev <- elevatr::get_elev_raster(poly20, z = zoom, clip = "locations", verbose = FALSE)
+      elev <- elevatr::get_elev_raster(poly20, z = zoom, verbose = FALSE) # clip = "locations" not working at the moment
   )
 
   # Calculate viewshed
