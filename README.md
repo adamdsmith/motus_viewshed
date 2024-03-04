@@ -1,6 +1,5 @@
 <!-- badges: start -->
-[![Launch RStudio Binder]
-(https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamdsmith/motus_viewshed/master?urlpath=rstudio)
+[![Launch RStudio Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamdsmith/motus_viewshed/master?urlpath=rstudio)
 <!-- badges: end -->
 
 Click the `Launch RStudio` badge above open and run RStudio in your browser (`CTRL`/`CMD` + click for new tab), provided courtesy of [mybinder.org](https://mybinder.org/). It may take a moment to build and open.
