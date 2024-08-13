@@ -72,7 +72,6 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
                          lwd = 1.25, legend = FALSE, label = NULL))
   }
 
-  
   # m <- leaflet::setView(m@map, lon, lat, zoom = 11)
   return(m)
 }
