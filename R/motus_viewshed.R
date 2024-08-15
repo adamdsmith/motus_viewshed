@@ -16,16 +16,14 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   
   pt_ll <- sf::st_sfc(sf::st_point(rev(coords)), crs = 4326)
   pt <- sf::st_transform(pt_ll, prj)
-  poly20 <- sf::st_buffer(pt, 20000)
-  poly15 <- sf::st_buffer(pt, 15000)
-  poly10 <- sf::st_buffer(pt, 10000)
-  poly5 <- sf::st_buffer(pt, 5000)
-  divisions <- st_wedges(0, 0, 20000, 8)
-  divisions <- sf::st_sf(sf::st_set_crs(divisions, prj))
-  
+  poly20 <-sf::st_sf(sf::st_set_crs(st_wedges(0, 0, 20000, 8), prj))
+  poly15 <- sf::st_sf(sf::st_set_crs(st_wedges(0, 0, 15000, 8), prj))
+  poly10 <- sf::st_sf(sf::st_set_crs(st_wedges(0, 0, 10000, 8), prj))
+  poly5 <- sf::st_sf(sf::st_set_crs(st_wedges(0, 0, 5000, 8), prj))
+
   # Get DEM
   suppressMessages(
-      elev <- elevatr::get_elev_raster(poly20, z = zoom, verbose = FALSE) # clip = "locations" not working at the moment
+      elev <- elevatr::get_elev_raster(poly20, z = zoom, verbose = FALSE, clip = "locations") # not working at the moment
   )
 
   # Calculate viewshed
@@ -55,9 +53,6 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
         mapview::mapview(pt, layer.name = "Proposed station", 
                          alpha.regions = 0, cex = 4, color = "orange",
                          lwd = 1.25, legend = FALSE, label = NULL) +
-        mapview::mapview(divisions, layer.name = "Direction guide",
-                         alpha.regions = 0, color = "white",
-                         lwd = 1.25, legend = FALSE, label = NULL) +
         mapview::mapview(poly20, layer.name = "20 km range", 
                          alpha.regions = 0, color = "white",
                          lwd = 1.25, legend = FALSE, label = NULL) +
@@ -76,7 +71,7 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   return(m)
 }
 
-st_wedge <- function(x,y,r,start,width,n=50){
+st_wedge <- function(x,y,r,start,width,n=150){
   theta = seq(start, start+width, length=n)
   xarc = x + r*sin(theta)
   yarc = y + r*cos(theta)
