@@ -10,6 +10,11 @@ USER root
 COPY . /home/rstudio
 RUN chown -R rstudio:rstudio /home/rstudio
 
+# Expose the existing CARTO key to RStudio sessions
+RUN printf 'CARTO_API_KEY=%s\n' "$CARTO_API_KEY" \
+    > /home/rstudio/.Renviron \
+ && chown rstudio:rstudio /home/rstudio/.Renviron
+
 RUN echo "Checking for 'apt.txt'..." \
  && if test -f "apt.txt" ; then \
       apt-get update --fix-missing > /dev/null \
