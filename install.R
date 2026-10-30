@@ -5,8 +5,6 @@ install.packages(c(
   "mapview",
   "progress",
   "raster",
-  "rgdal",
-  "rgeos",
   "sf",
   "sp",
   "tidygeocoder",
