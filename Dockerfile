@@ -1,4 +1,4 @@
-FROM rocker/binder:4.3.0
+FROM rocker/binder:4.4.2
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CARTO_API_KEY=cb1_4ygs_1_a9ef5288fe01263193c16276
