@@ -1,4 +1,5 @@
-motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10) {
+motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10,
+                           carto_key = Sys.getenv("CARTO_API_KEY")) {
   if (!requireNamespace("elevatr", quietly = TRUE)) install.packages("elevatr", quiet = TRUE)
   if (!requireNamespace("raster", quietly = TRUE)) install.packages("raster", quiet = TRUE)
   if (!requireNamespace("mapview", quietly = TRUE)) install.packages("mapview", quiet = TRUE)
@@ -6,8 +7,13 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
   if (!requireNamespace("tidygeocoder", quietly = TRUE)) install.packages("tidygeocoder", quiet = TRUE)
   
   # Set up mapview display options
-  mt <- c("CartoDB.DarkMatter", "Esri.WorldImagery", "Esri.WorldTopoMap", "OpenStreetMap")
-  mapview::mapviewOptions(basemaps = mt, na.color = "#FFFFFF00")
+  mt <- c("Esri.WorldGrayCanvas", "Esri.WorldImagery", "Esri.WorldTopoMap", "OpenStreetMap")
+  mapview::mapviewOptions(basemaps = mt, basemaps.color.shuffle = FALSE,
+                         na.color = "#FFFFFF00")
+  carto_key <- trimws(carto_key)
+  if (length(carto_key) != 1L || is.na(carto_key)) {
+    stop("carto_key must be a single string.")
+  }
   
   # Calculate range rings
   lon <- coords[2]; lat <- coords[1]
@@ -65,6 +71,40 @@ motus_viewshed <- function(coords = c(38.897659, -77.036564), ht = 0, zoom = 10)
         mapview::mapview(poly5, layer.name = "5 km range", 
                          alpha.regions = 0, color = "white",
                          lwd = 1.25, legend = FALSE, label = NULL))
+  }
+
+  if (nzchar(carto_key)) {
+    # Rebuild only basemaps and control; preserve viewshed overlays.
+    m@map <- leaflet::clearTiles(m@map)
+    m@map <- leaflet::removeLayersControl(m@map)
+    m@map <- leaflet::addTiles(
+      m@map,
+      urlTemplate = paste0(
+        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=",
+        utils::URLencode(carto_key, reserved = TRUE)
+      ),
+      group = "CartoDB.DarkMatter",
+      attribution = paste0(
+        '&copy; <a href="https://carto.com/">CARTO</a> ',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">',
+        'OpenStreetMap</a> contributors'
+      ),
+      options = leaflet::tileOptions(maxZoom = 20)
+    )
+    for (provider in mt) {
+      m@map <- leaflet::addProviderTiles(m@map, provider, group = provider)
+      m@map <- leaflet::hideGroup(m@map, provider)
+    }
+    overlays <- c("Proposed station", "15 km range", "10 km range", "5 km range")
+    if (!all(pt_elev > max(raster::values(elev), na.rm = TRUE))) {
+      overlays <- c("Elev. deficit (m)", "20 km range", overlays)
+    }
+    m@map <- leaflet::addLayersControl(
+      m@map, baseGroups = c("CartoDB.DarkMatter", mt), overlayGroups = overlays,
+      options = leaflet::layersControlOptions(collapsed = TRUE)
+    )
+  } else {
+    message("CARTO_API_KEY is not set; using Esri.WorldGrayCanvas.")
   }
 
   # m <- leaflet::setView(m@map, lon, lat, zoom = 11)
