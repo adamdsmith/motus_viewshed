@@ -39,3 +39,10 @@ If you're doing many of these, there's an abbreviated version `mv()` that's easi
 ``` r
 mv(35.196986, -82.873250, 6)
 ```
+
+
+### CARTO Dark Matter basemap
+
+The dark basemap uses a free CARTO Basemaps API key. For local R sessions, set `CARTO_API_KEY` in your own `.Renviron` (do not commit the key), restart R, and use `mv()` as usual. Without a key, the map uses Esri World Gray Canvas plus the other existing basemaps.
+
+**Public Binder:** mybinder.org does not inject repository secrets into public sessions. To provide CARTO automatically to all Binder visitors, a *dedicated public-client key* would have to be distributed with the public project (for example, in a separate source file), meaning anyone can inspect and reuse it. Do not publish a credential that must remain private. CARTO's free noncommercial plan stops tile delivery at its quota rather than billing overages. Configure Referer restrictions when practical and monitor use in the CARTO dashboard.
